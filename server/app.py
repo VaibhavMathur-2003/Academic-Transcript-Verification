@@ -2,8 +2,10 @@ from flask import Flask, request, jsonify, send_file, render_template
 from bs4 import BeautifulSoup
 import csv
 from io import BytesIO, StringIO
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app) 
 
 def grade_to_number(grade):
     grade_map = {
