@@ -1,50 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload HTML File</title>
-</head>
+<html>
 <body>
-    <h1>Upload HTML File to Convert to CSV</h1>
-    <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
-        <label for="fileInput">Choose HTML file:</label>
-        <input type="file" id="fileInput" name="file" accept=".html,.htm" required>
-        <button type="submit">Upload</button>
+    <h2>Upload HTML File</h2>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <input type="submit" value="Upload">
     </form>
-
-    <script>
-        document.getElementById('uploadForm').onsubmit = function(e) {
-            e.preventDefault();
-
-            const form = e.target;
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: form.method,
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();
-                } else {
-                    throw new Error('File upload failed');
-                }
-            })
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'output_with_average.csv';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to convert file. Please try again.');
-            });
-        };
-    </script>
 </body>
 </html>
