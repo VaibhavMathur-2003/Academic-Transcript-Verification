@@ -1,10 +1,16 @@
 from flask import Flask, render_template, request, send_file
 from bs4 import BeautifulSoup
 import csv
+<<<<<<< HEAD
 import io
 from function import process_html
+=======
+from io import BytesIO, StringIO
+from flask_cors import CORS  # Import CORS
+>>>>>>> b888fe5a1e0d252d2cce0c85141e737df82f47a2
 
 app = Flask(__name__)
+CORS(app) 
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
