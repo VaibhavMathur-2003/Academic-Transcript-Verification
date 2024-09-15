@@ -32,7 +32,6 @@ def process_html(file):
             col8_text = col8.text.strip() if col8 else ''
             row.append(col8_text)
             
-            # Calculate grade points
             try:
                 credits = float(row[2])  # col3 contains credits
                 if col8_text and col8_text != 'P':
@@ -44,20 +43,17 @@ def process_html(file):
 
             data.append(row)
 
-        # Calculate and print average for this ul
         if ul_total_credits > 0:
             ul_average = ul_total_points / ul_total_credits
             print(f"Average for {header}: {ul_average:.2f}")
         else:
             print(f"No valid grades for {header}")
 
-    # Generate CSV
     output = StringIO()
     writer = csv.writer(output)
     writer.writerow(['Course', 'Course Title', 'Credits', 'Reg. Type', 'Elective Type', 'Grade'])
     writer.writerows(data)
 
-    # Create in-memory file-like object
     mem = BytesIO()
     mem.write(output.getvalue().encode('utf-8'))
     mem.seek(0)
