@@ -20,7 +20,7 @@
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #333;
         }
@@ -60,6 +60,9 @@
             margin-bottom: 10px;
             border-radius: 4px;
         }
+        .section {
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
@@ -76,34 +79,48 @@
             {% endif %}
         {% endwith %}
         
-        <form method="POST">
-            <label for="course">Course:</label>
-            <input type="text" id="course" name="course" required>
-            
-            <label for="course_title">Course Title:</label>
-            <input type="text" id="course_title" name="course_title" required>
-            
-            <label for="credits">Credits:</label>
-            <input type="number" id="credits" name="credits" required>
-            
-            <label for="reg_type">Registration Type:</label>
-            <select id="reg_type" name="reg_type" required>
-                <option value="Regular">Regular</option>
-                <option value="Audit">Audit</option>
-                <option value="Pass/Fail">Pass/Fail</option>
-            </select>
-            
-            <label for="elective_type">Elective Type:</label>
-            <select id="elective_type" name="elective_type" required>
-                <option value="Mandatory">Mandatory</option>
-                <option value="Elective">Elective</option>
-                <option value="Free Elective">Free Elective</option>
-            </select>
-            
-           
-            
-            <button type="submit">Add Course</button>
-        </form>
+        <div class="section">
+            <h2>Add Individual Course</h2>
+            <form method="POST">
+                <label for="course">Course:</label>
+                <input type="text" id="course" name="course" required>
+                
+                <label for="course_title">Course Title:</label>
+                <input type="text" id="course_title" name="course_title" required>
+                
+                <label for="credits">Credits:</label>
+                <input type="number" id="credits" name="credits" required>
+                
+                <label for="reg_type">Registration Type:</label>
+                <select id="reg_type" name="reg_type" required>
+                    <option value="Regular">Regular</option>
+                </select>
+                
+                <label for="elective_type">Elective Type:</label>
+                <select id="elective_type" name="elective_type" required>
+                    <option value="Institute Core Theory">Institute Core Theory</option>
+                    <option value="Institute Core Theory + Lab">Institute Core Theory + Lab</option>
+                    <option value="Institute Core Lab">Institute Core Lab</option>
+                    <option value="Open Elective">Open Elective</option>
+                    <option value="Program Elective">Program Elective</option>
+                    <option value="Program Core Theory">Program Core Theory</option>
+                    <option value="Program Core Theory + Lab">Program Core Theory + Lab</option>
+                    <option value="Project">Project</option>
+                </select>
+                
+                <button type="submit">Add Course</button>
+            </form>
+        </div>
+        
+        <div class="section">
+            <h2>Upload CSV File</h2>
+            <form method="POST" enctype="multipart/form-data">
+                <label for="file">Choose CSV file:</label>
+                <input type="file" id="file" name="file" accept=".csv" required>
+                
+                <button type="submit">Upload CSV</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>

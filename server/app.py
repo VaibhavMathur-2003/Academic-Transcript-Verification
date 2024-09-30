@@ -4,12 +4,26 @@ from functools import wraps
 from werkzeug.security import check_password_hash, generate_password_hash
 from function import process_html
 from flask_cors import cross_origin
+import io
+import csv
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
 
 DATABASE = 'criteria.db'
 
+def process_csv(file):
+    stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
+    csv_reader = csv.reader(stream)
+    next(csv_reader)  # Skip the header row
+    db = get_db()
+    cursor = db.cursor()
+    for row in csv_reader:
+        course, course_title, credits, reg_type, elective_type = row
+        cursor.execute('INSERT INTO courses (course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?)',
+                       (course, course_title, credits, reg_type, elective_type))
+    db.commit()
+    
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -38,6 +52,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 @app.route('/', methods=['GET', 'POST'])
 @cross_origin()
 def upload_file():
@@ -48,7 +63,8 @@ def upload_file():
         if file.filename == '':
             return 'No selected file'
         if file:
-            return process_html(file)
+            report_data = process_html(file)
+            return render_template('report.html', report_data=report_data)
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -84,17 +100,25 @@ def signup():
 @login_required
 def admin():
     if request.method == 'POST':
-        course = request.form['course']
-        course_title = request.form['course_title']
-        credits = request.form['credits']
-        reg_type = request.form['reg_type']
-        elective_type = request.form['elective_type']
-        
-        db = get_db()
-        db.execute('INSERT INTO courses (course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?, ?)',
-                   (course, course_title, credits, reg_type, elective_type))
-        db.commit()
-        flash('Course added successfully!')
+        if 'file' in request.files:
+            file = request.files['file']
+            if file.filename.endswith('.csv'):
+                process_csv(file)
+                flash('Courses added successfully from CSV!')
+            else:
+                flash('Please upload a CSV file.')
+        else:
+            course = request.form['course']
+            course_title = request.form['course_title']
+            credits = request.form['credits']
+            reg_type = request.form['reg_type']
+            elective_type = request.form['elective_type']
+            
+            db = get_db()
+            db.execute('INSERT INTO courses (course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?)',
+                       (course, course_title, credits, reg_type, elective_type))
+            db.commit()
+            flash('Course added successfully!')
         
     return render_template('admin.html')
 
