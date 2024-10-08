@@ -53,19 +53,19 @@ def login_required(f):
     return decorated_function
 
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/', methods=['POST'])
 @cross_origin()
 def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part'
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file'
-        if file:
-            report_data = process_html(file)
-            return render_template('report.html', report_data=report_data)
-    return render_template('index.html')
+    if 'file' not in request.files:
+        return 'No file part', 400
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file', 400
+    if file:
+        report_data = process_html(file)
+        return jsonify(report_data)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

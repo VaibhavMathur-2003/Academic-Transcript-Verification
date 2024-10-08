@@ -1,109 +1,153 @@
-import React, { useState } from "react";
-import Papa from "papaparse";
-import "./App.css";
+import React, { useState } from 'react';
 
-const FileUpload = () => {
-  const [fileName, setFileName] = useState("No file chosen");
-  const [tableData, setTableData] = useState([]);
+function UploadForm() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [reportData, setReportData] = useState(null);
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFileName(file.name);
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!selectedFile) {
+      alert('Please select a file first.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await fetch('http://localhost:5000/', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const report = await response.json(); // Assuming the Flask API returns JSON data
+        setReportData(report);
+      } else {
+        alert('File upload failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error uploading the file:', error);
+      alert('An error occurred while uploading the file.');
     }
   };
 
-  const handleUpload = () => {
-    const fileInput = document.querySelector('input[type="file"]');
-    const formData = new FormData();
-    formData.append("file", fileInput.files[0]);
-
-    fetch("http://127.0.0.1:5000", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "output.csv");
-        document.body.appendChild(link);
-        link.click();
-        link.parentNode.removeChild(link);
-
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          const csvText = event.target.result;
-          console.log(csvText);
-          parseCSV(csvText);
-        };
-        reader.readAsText(blob);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
-  const parseCSV = (csvText) => {
-    Papa.parse(csvText, {
-      header: true,
-      dynamicTyping: true, 
-      complete: function (results) {
-        const filteredData = results.data.filter((row) => {
-          const hasFInCredits = row.Grade === "F";
-          const hasHSInCourse = row.Course && row.Course.includes("HS");
-          return hasFInCredits || hasHSInCourse;
-        });
-        setTableData(filteredData);
-      },
-      error: function (error) {
-        console.error("Error parsing CSV:", error);
-      },
-    });
-  };
-
   return (
-    <div className="file-upload-container">
-      <h1>Upload File to Convert to CSV and Display Data</h1>
-      <div className="file-upload">
-        <input type="file" onChange={handleFileChange} id="fileInput" />
-        <label htmlFor="fileInput" className="file-label">
-          Choose File
-        </label>
-        <span className="file-name">{fileName}</span>
-        <button onClick={handleUpload} className="upload-button">
-          Upload
-        </button>
-      </div>
+    <div>
+      <h2>Upload HTML File</h2>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <input type="file" name="file" onChange={handleFileChange} />
+        <button type="submit">Upload</button>
+      </form>
 
-      {tableData.length > 0 && (
-        <div className="table-container">
-          <h2>CSV Data</h2>
-          <table className="styled-table">
-            <thead>
-              <tr>
-                <th>Course</th>
-                <th>Course Title</th>
-                <th>Credits</th>
-                <th>Grade</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((val, key) => (
-                <tr key={key}>
-                  <td>{val.Course}</td>
-                  <td>{val["Course Title"]}</td>
-                  <td>{val.Credits}</td>
-                  <td>{val.Grade}</td>
+      {/* Render report data */}
+      {reportData && (
+        <div>
+          <h2>Report</h2>
+
+          {/* Elective Credits Section */}
+          <section>
+            <h3>Elective Credits</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Elective Type</th>
+                  <th>Total Credits</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {Object.entries(reportData.elective_credits).map(([elective, credits]) => (
+                  <tr key={elective}>
+                    <td>{elective}</td>
+                    <td>{credits}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+
+          {/* Missing Courses Section */}
+          {reportData.missing_courses && (
+            <section>
+              <h3>Missing Courses</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Elective Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(reportData.missing_courses).map(([courseCode, courseInfo]) => (
+                    <tr key={courseCode}>
+                      <td>{courseCode}</td>
+                      <td>{courseInfo.title}</td>
+                      <td>{courseInfo.elective_type}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          )}
+
+          {/* CPI Section */}
+          <section>
+            <h3>CPI for Each Semester</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>CPI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(reportData.section_averages).map(([semester, cpi]) => (
+                  <tr key={cpi}>
+                    <td>{cpi}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+          {console.log(reportData)}
+
+          {/* All Courses Section */}
+          <section>
+            <h3>All Courses</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Title</th>
+                  <th>Credits</th>
+                  <th>Reg. Type</th>
+                  <th>Elective Type</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportData.courses.map((course, index) => (
+                  <tr key={index}>
+                    <td>{course[0]}</td>
+                    <td>{course[1]}</td>
+                    <td>{course[2]}</td>
+                    <td>{course[3]}</td>
+                    <td>{course[4]}</td>
+                    <td>{course[5]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default FileUpload;
+export default UploadForm;

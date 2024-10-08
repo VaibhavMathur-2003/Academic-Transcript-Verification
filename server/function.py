@@ -31,17 +31,9 @@ def process_html(file):
 
     html_courses = set()
     elective_credits = {elective: 0 for elective in electives}
-    section_averages = {}
+    section_averages = []
 
     for ul in soup.find_all('ul', class_='subCnt'):
-        header_span = ul.find('span', class_='changeHdrCls')
-        sub_header_span = ul.find('span', class_='changeSubHdrCls')
-
-        if header_span and sub_header_span:
-            header = header_span.text.strip()
-            sub_header = sub_header_span.text.strip()
-        else:
-            header = "Unknown"
 
         ul_total_points = 0
         ul_total_credits = 0
@@ -63,19 +55,22 @@ def process_html(file):
             try:
                 credits = float(row[2])
                 if electiveTypes in electives:
-                    elective_credits[electiveTypes] += credits                    
+                    elective_credits[electiveTypes] += credits
+                else:
+                    elective_credits['Others'] = elective_credits.get('Others', 0) + credits
+
                 if col8_text and col8_text != 'P':
                     grade = grade_points.get(col8_text, 0)
                     ul_total_points += credits * grade
                     ul_total_credits += credits
             except ValueError:
                 print(f"Error processing credits for course: {course_code}")
-
             data.append(row)
 
+        print(ul_total_credits, ul_total_points)
         if ul_total_credits > 0:
             ul_average = ul_total_points / ul_total_credits
-            section_averages[header] = round(ul_average, 2)
+            section_averages.append(round(ul_average, 2))
 
     missing_courses = {
         course_code: course_info

@@ -190,54 +190,7 @@ const AdminDashboard = () => {
 };
 
 const styles = {
-    container: {
-        maxWidth: '800px',
-        margin: 'auto',
-        background: 'white',
-        padding: '20px',
-        borderRadius: '5px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-        backgroundColor: '#f4f4f4',
-    },
-    flashMessages: {
-        listStyleType: 'none',
-        padding: '0',
-    },
-    flashMessage: {
-        backgroundColor: '#d4edda',
-        borderColor: '#c3e6cb',
-        color: '#155724',
-        padding: '10px',
-        marginBottom: '10px',
-        borderRadius: '4px',
-    },
-    section: {
-        marginBottom: '30px',
-    },
-    form: {
-        display: 'grid',
-        gap: '10px',
-    },
-    input: {
-        width: '100%',
-        padding: '8px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-    },
-    select: {
-        width: '100%',
-        padding: '8px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-    },
-    button: {
-        backgroundColor: '#007bff',
-        color: 'white',
-        border: 'none',
-        padding: '10px 15px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-    },
+   
 };
 
 export default AdminDashboard;
