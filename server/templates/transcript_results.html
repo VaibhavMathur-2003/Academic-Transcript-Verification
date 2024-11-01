@@ -1,0 +1,89 @@
+<!-- templates/transcript_results.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Transcript Results</h1>
+    
+    {% for student in students %}
+    <div class="mb-8 bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="px-6 py-4 bg-gray-50">
+            <h2 class="text-xl font-bold">{{ student.Name }}</h2>
+            {% if student.name_variations %}
+            <p class="text-sm text-gray-600">Also appears as: {{ student.name_variations|join(', ') }}</p>
+            {% endif %}
+        </div>
+        
+        <!-- Completed Courses -->
+        <div class="px-6 py-4">
+            <h3 class="text-lg font-semibold mb-4">Completed Courses</h3>
+            <table class="min-w-full mb-6">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="px-4 py-2 text-left">Course No</th>
+                        <th class="px-4 py-2 text-left">Course Title</th>
+                        <th class="px-4 py-2 text-left">Credits</th>
+                        <th class="px-4 py-2 text-left">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in student.Courses %}
+                    <tr class="border-t">
+                        <td class="px-4 py-2">{{ course['Course No'] }}</td>
+                        <td class="px-4 py-2">{{ course['Course Title'] }}</td>
+                        <td class="px-4 py-2">{{ course['Credits'] }}</td>
+                        <td class="px-4 py-2">{{ course['Grade'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Missing Courses -->
+            {% if student.missing_courses %}
+            <div class="mt-8">
+                <h3 class="text-lg font-semibold mb-4 text-red-600">Missing Required Courses</h3>
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-red-50">
+                            <th class="px-4 py-2 text-left">Course No</th>
+                            <th class="px-4 py-2 text-left">Course Title</th>
+                            <th class="px-4 py-2 text-left">Credits</th>
+                            <th class="px-4 py-2 text-left">Type</th>
+                            <th class="px-4 py-2 text-left">Category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in student.missing_courses %}
+                        <tr class="border-t border-red-100 bg-red-50">
+                            <td class="px-4 py-2">{{ course.course }}</td>
+                            <td class="px-4 py-2">{{ course.course_title }}</td>
+                            <td class="px-4 py-2">{{ course.credits }}</td>
+                            <td class="px-4 py-2">{{ course.reg_type }}</td>
+                            <td class="px-4 py-2">{{ course.elective_type }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Summary Statistics -->
+                <div class="mt-4 p-4 bg-red-50 rounded-lg">
+                    <p class="text-red-700">
+                        <span class="font-semibold">Total Missing Courses:</span> 
+                        {{ student.missing_courses|length }}
+                    </p>
+                    <p class="text-red-700">
+                        <span class="font-semibold">Total Missing Credits:</span> 
+                        {{ student.missing_courses|sum(attribute='credits') }}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    
+    <a href="{{ url_for('process_transcript_route') }}" 
+       class="inline-block bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        Upload Another Transcript
+    </a>
+</div>
+{% endblock %}

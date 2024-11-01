@@ -127,6 +127,80 @@ def logout():
     session.pop('admin', None)
     return redirect(url_for('login'))
 
+# First add these imports at the top of your app.py
+from werkzeug.utils import secure_filename
+import os
+from adminfunction import process_transcript  # Assuming you'll save the transcript processing code in function.py
+
+# Add these configurations after app creation
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Create uploads directory if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Update the route in app.py
+@app.route('/transcript', methods=['GET', 'POST'])
+def process_transcript_route():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+            
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+            
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            
+            try:
+                # Process the PDF and get results
+                results = process_transcript(filepath, 
+                    os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_data.json'))
+                
+                # Clean up - remove uploaded file after processing
+                os.remove(filepath)
+                
+                # Get all courses from database
+                db = get_db()
+                db_courses = db.execute('SELECT * FROM courses').fetchall()
+                
+                # For each student, find missing courses
+                for student in results:
+                    student_courses = {course['Course No']: course for course in student['Courses']}
+                    missing_courses = []
+                    
+                    for db_course in db_courses:
+                        if db_course['course'] not in student_courses:
+                            missing_courses.append({
+                                'course': db_course['course'],
+                                'course_title': db_course['course_title'],
+                                'credits': db_course['credits'],
+                                'reg_type': db_course['reg_type'],
+                                'elective_type': db_course['elective_type']
+                            })
+                    
+                    student['missing_courses'] = missing_courses
+                
+                return render_template('transcript_results.html', students=results)
+                
+            except Exception as e:
+                flash(f'Error processing file: {str(e)}')
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+                return redirect(request.url)
+                
+    return render_template('transcript_upload.html')
+
+
 if __name__ == '__main__':
     init_db()  # Initialize the database before running the app
     app.run(host="0.0.0.0", port=5000, debug=True)

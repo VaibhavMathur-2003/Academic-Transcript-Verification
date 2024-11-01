@@ -1,0 +1,468 @@
+[
+  {
+    "Name": "MARUTHI MADHU KIRAN TIRUVAIPATI",
+    "Courses": [
+      {
+        "Course No": "CS331",
+        "Course Title": "MACHINE LEARNING",
+        "Credits": 4.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CS425",
+        "Course Title": "ALGEBRAIC CODING THEORY AND CRYPTOLOGY",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "HS321",
+        "Course Title": "INTRODUCTION TO FINANCE",
+        "Credits": 3.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "MA306",
+        "Course Title": "TOPOLOGY",
+        "Credits": 3.0,
+        "Grade": "c"
+      },
+      {
+        "Course No": "HS311",
+        "Course Title": "LANGUAGE AND SOCIETY",
+        "Credits": 3.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "ID605",
+        "Course Title": "BIOINSPIRED ENGINEERING",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "MA302",
+        "Course Title": "DIFFERENTIAL EQUATIONS II",
+        "Credits": 2.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "MA304",
+        "Course Title": "COMPLEX ANALYSIS II",
+        "Credits": 2.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "MA305",
+        "Course Title": "MEASURES AND PROBABILITY",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "cS222",
+        "Course Title": "ALGORITHM DESIGN",
+        "Credits": 4.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "D601",
+        "Course Title": "NUMERICAL SIMULATION AND ITS APPLICATIONS",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "MA202",
+        "Course Title": "MULTIVARIATE CALCULUS",
+        "Credits": 4.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "MA203",
+        "Course Title": "NUMERICAL ANALYSIS",
+        "Credits": 4.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "MA205",
+        "Course Title": "ALGEBRA",
+        "Credits": 4.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "CS220",
+        "Course Title": "DATA STRUCTURES AND ALGORITHMS",
+        "Credits": 4.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "CS230",
+        "Course Title": "PROBABILITY AND STATISTICS FOR COMPUTER SCIENCE",
+        "Credits": 3.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "MA201",
+        "Course Title": "REAL ANALYSIS",
+        "Credits": 4.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "MA204",
+        "Course Title": "DISCRETE MATHEMATICS",
+        "Credits": 4.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "MA206",
+        "Course Title": "LINEAR ALGEBRA AND APPLICATIONS",
+        "Credits": 4.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "ME101",
+        "Course Title": "INTRODUCTION TO MANUFACTURING",
+        "Credits": 2.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "BIO1041",
+        "Course Title": "INTRODUCTORY BIOLOGY",
+        "Credits": 3.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CS102",
+        "Course Title": "SOFTWARE TOOLS",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "EE101",
+        "Course Title": "INTRODUCTION TO ELECTRICAL AND ELECTRONICS",
+        "Credits": 4.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "MA102",
+        "Course Title": "BASIC LINEAR ALGEBRA",
+        "Credits": 2.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "MA103",
+        "Course Title": "ORDINARY DIFFERENTIAL EQUATIONS",
+        "Credits": 2.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "ME102",
+        "Course Title": "ENGINEERING GRAPHICS AND INTRODUCTION TO",
+        "Credits": 2.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "NO102",
+        "Course Title": "NATIONAL SPORTS ORGANISATION",
+        "Credits": 0.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "PH102",
+        "Course Title": "ELECTRICITY AND MAGNETISM",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "PH104",
+        "Course Title": "PHYSICS LAB II",
+        "Credits": 2.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "CH101",
+        "Course Title": "PHYSICAL CHEMISTRY",
+        "Credits": 2.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CH102",
+        "Course Title": "INORGANIC AND ORGANIC CHEMISTRY",
+        "Credits": 2.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CH104",
+        "Course Title": "CHEMISTRY LAB II",
+        "Credits": 2.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "CS101",
+        "Course Title": "INTRODUCTION TO COMPUTING",
+        "Credits": 4.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "HS101",
+        "Course Title": "FOUNDATION PROGRAMME IN HUMANITIES AND SOCIAL",
+        "Credits": 3.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "MA100",
+        "Course Title": "INTRODUCTION TO PROFESSION",
+        "Credits": 1.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "MA101",
+        "Course Title": "CALCULUS",
+        "Credits": 4.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "NO101",
+        "Course Title": "NATIONAL SPORTS ORGANIZATION",
+        "Credits": 0.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "PH101",
+        "Course Title": "QUANTUM PHYSICS AND APPLICATION",
+        "Credits": 3.0,
+        "Grade": "A"
+      }
+    ],
+    "name_variations": [
+      "MARUTHI MADHU KIRAN TIRUVAIPATI"
+    ]
+  },
+  {
+    "Name": "PALIKA BABUJI POWTHRA",
+    "Courses": [
+      {
+        "Course No": "CS222",
+        "Course Title": "ALGORITHM DESIGN",
+        "Credits": 4.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "CS311",
+        "Course Title": "COMPILER DESIGN",
+        "Credits": 4.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "cs321",
+        "Course Title": "THEORY OF COMPUTATION",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CS331",
+        "Course Title": "MACHINE LEARNING",
+        "Credits": 4.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CS425",
+        "Course Title": "ALGEBRAIC CODING THEORY AND CRYPTOLOGY",
+        "Credits": 3.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CS210",
+        "Course Title": "DIGITAL SYSTEMS DESIGN",
+        "Credits": 4.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "CS220",
+        "Course Title": "DATA STRUCTURES AND ALGORITHMS",
+        "Credits": 4.0,
+        "Grade": "F"
+      },
+      {
+        "Course No": "cs221",
+        "Course Title": "DISCRETE STRUCTURES",
+        "Credits": 3.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "CS230",
+        "Course Title": "PROBABILITY AND STATISTICS FOR COMPUTER SCIENCE",
+        "Credits": 3.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "HS221",
+        "Course Title": "ECONOMY AND PUBLIC POLICY",
+        "Credits": 3.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "ME101",
+        "Course Title": "INTRODUCTION TO MANUFACTURING",
+        "Credits": 2.0,
+        "Grade": "A"
+      },
+      {
+        "Course No": "CS300",
+        "Course Title": "PROGRAMMING LANGUAGE PARADIGMS",
+        "Credits": 4.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CS310",
+        "Course Title": "OPERATING SYSTEMS",
+        "Credits": 4.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "CS320",
+        "Course Title": "LOGIC IN COMPUTER SCIENCE",
+        "Credits": 3.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "HS311",
+        "Course Title": "LANGUAGE AND SOCIETY",
+        "Credits": 3.0,
+        "Grade": "B+"
+      },
+      {
+        "Course No": "CS211",
+        "Course Title": "COMPUTER ARCHITECTURE",
+        "Credits": 4.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "cs212",
+        "Course Title": "COMPUTER NETWORKS",
+        "Credits": 4.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "HS211",
+        "Course Title": "INTRODUCTION TO MORPHOLOGY",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "ID601",
+        "Course Title": "NUMERICAL SIMULATION AND ITS APPLICATIONS",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "BIO101",
+        "Course Title": "INTRODUCTORY BIOLOGY",
+        "Credits": 3.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "CS102",
+        "Course Title": "SOFTWARE TOOLS",
+        "Credits": 3.0,
+        "Grade": "C"
+      },
+      {
+        "Course No": "EE101",
+        "Course Title": "INTRODUCTION TO ELECTRICAL AND ELECTRONICS",
+        "Credits": 4.0,
+        "Grade": "c"
+      },
+      {
+        "Course No": "ME102",
+        "Course Title": "ENGINEERING GRAPHICS AND INTRODUCTION TO",
+        "Credits": 2.0,
+        "Grade": "f"
+      },
+      {
+        "Course No": "MTH1021",
+        "Course Title": "BASIC LINEAR ALGEBRA",
+        "Credits": 2.0,
+        "Grade": "f"
+      },
+      {
+        "Course No": "MTH1022",
+        "Course Title": "ORDINARY DIFFERENTIAL EQUATIONS",
+        "Credits": 2.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "NO102",
+        "Course Title": "NATIONAL SPORTS ORGANISATION",
+        "Credits": 0.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "PH102",
+        "Course Title": "ELECTRICITY AND MAGNETISM",
+        "Credits": 3.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "PH104",
+        "Course Title": "PHYSICS LAB II",
+        "Credits": 2.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CH101",
+        "Course Title": "PHYSICAL CHEMISTRY",
+        "Credits": 2.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "CH102",
+        "Course Title": "INORGANIC AND ORGANIC CHEMISTRY",
+        "Credits": 2.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CH104",
+        "Course Title": "CHEMISTRY LAB II",
+        "Credits": 2.0,
+        "Grade": "C+"
+      },
+      {
+        "Course No": "CS100",
+        "Course Title": "INTRODUCTION TO PROFESSION",
+        "Credits": 1.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "CS101",
+        "Course Title": "INTRODUCTION TO COMPUTING",
+        "Credits": 4.0,
+        "Grade": "D"
+      },
+      {
+        "Course No": "HS101",
+        "Course Title": "FOUNDATION PROGRAMME IN HUMANITIES AND SOCIAL",
+        "Credits": 3.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "MTH101",
+        "Course Title": "CALCULUS",
+        "Credits": 4.0,
+        "Grade": "B"
+      },
+      {
+        "Course No": "NO101",
+        "Course Title": "NATIONAL SPORTS ORGANIZATION",
+        "Credits": 0.0,
+        "Grade": "P"
+      },
+      {
+        "Course No": "PH101",
+        "Course Title": "QUANTUM PHYSICS AND APPLICATIONS",
+        "Credits": 3.0,
+        "Grade": "B+"
+      }
+    ],
+    "name_variations": [
+      "PALIKA BABUJI POWTHRA"
+    ]
+  }
+]
