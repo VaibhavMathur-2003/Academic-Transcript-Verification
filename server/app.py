@@ -19,9 +19,9 @@ def process_csv(file):
     db = get_db()
     cursor = db.cursor()
     for row in csv_reader:
-        course, course_title, credits, reg_type, elective_type = row
-        cursor.execute('INSERT INTO courses (course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?)',
-                       (course, course_title, credits, reg_type, elective_type))
+        branch, course, course_title, credits, reg_type, elective_type = row
+        cursor.execute('INSERT INTO courses (branch, course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?, ?)',
+                       (branch, course, course_title, credits, reg_type, elective_type))
     db.commit()
     
 def get_db():
@@ -108,6 +108,7 @@ def admin():
             else:
                 flash('Please upload a CSV file.')
         else:
+            branch = request.form['branch']
             course = request.form['course']
             course_title = request.form['course_title']
             credits = request.form['credits']
@@ -115,8 +116,8 @@ def admin():
             elective_type = request.form['elective_type']
             
             db = get_db()
-            db.execute('INSERT INTO courses (course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?)',
-                       (course, course_title, credits, reg_type, elective_type))
+            db.execute('INSERT INTO courses (branch, course, course_title, credits, reg_type, elective_type) VALUES (?, ?, ?, ?, ?, ?)',
+                       (branch, course, course_title, credits, reg_type, elective_type))
             db.commit()
             flash('Course added successfully!')
         
@@ -171,10 +172,15 @@ def process_transcript_route():
                 
                 # Get all courses from database
                 db = get_db()
-                db_courses = db.execute('SELECT * FROM courses').fetchall()
+                # db_courses = db.execute('SELECT * FROM courses').fetchall()
                 
                 # For each student, find missing courses
                 for student in results:
+                    student_branch = student['Branch']
+
+                    # Get all courses from database for the student's branch
+                    db_courses = db.execute('SELECT * FROM courses WHERE branch = ?', (student_branch,)).fetchall()
+
                     student_courses = {course['Course No']: course for course in student['Courses']}
                     missing_courses = []
                     

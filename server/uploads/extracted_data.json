@@ -1,6 +1,7 @@
 [
   {
     "Name": "MARUTHI MADHU KIRAN TIRUVAIPATI",
+    "Branch": "MATHEMATICS AND COMPUTING",
     "Courses": [
       {
         "Course No": "CS331",
@@ -24,7 +25,7 @@
         "Course No": "MA306",
         "Course Title": "TOPOLOGY",
         "Credits": 3.0,
-        "Grade": "c"
+        "Grade": "C"
       },
       {
         "Course No": "HS311",
@@ -57,7 +58,7 @@
         "Grade": "B"
       },
       {
-        "Course No": "cS222",
+        "Course No": "CS222",
         "Course Title": "ALGORITHM DESIGN",
         "Credits": 4.0,
         "Grade": "B"
@@ -237,6 +238,7 @@
   },
   {
     "Name": "PALIKA BABUJI POWTHRA",
+    "Branch": "COMPUTER SCIENCE AND ENGINEERING",
     "Courses": [
       {
         "Course No": "CS222",
@@ -251,7 +253,7 @@
         "Grade": "D"
       },
       {
-        "Course No": "cs321",
+        "Course No": "CS321",
         "Course Title": "THEORY OF COMPUTATION",
         "Credits": 3.0,
         "Grade": "B"
@@ -281,7 +283,7 @@
         "Grade": "F"
       },
       {
-        "Course No": "cs221",
+        "Course No": "CS221",
         "Course Title": "DISCRETE STRUCTURES",
         "Credits": 3.0,
         "Grade": "C"
@@ -335,7 +337,7 @@
         "Grade": "B"
       },
       {
-        "Course No": "cs212",
+        "Course No": "CS212",
         "Course Title": "COMPUTER NETWORKS",
         "Credits": 4.0,
         "Grade": "C+"
@@ -368,19 +370,19 @@
         "Course No": "EE101",
         "Course Title": "INTRODUCTION TO ELECTRICAL AND ELECTRONICS",
         "Credits": 4.0,
-        "Grade": "c"
+        "Grade": "C"
       },
       {
         "Course No": "ME102",
         "Course Title": "ENGINEERING GRAPHICS AND INTRODUCTION TO",
         "Credits": 2.0,
-        "Grade": "f"
+        "Grade": "F"
       },
       {
         "Course No": "MTH1021",
         "Course Title": "BASIC LINEAR ALGEBRA",
         "Credits": 2.0,
-        "Grade": "f"
+        "Grade": "F"
       },
       {
         "Course No": "MTH1022",

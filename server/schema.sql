@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS courses (
     course_title TEXT NOT NULL,
     credits INTEGER NOT NULL,
     reg_type TEXT NOT NULL,
-    elective_type TEXT NOT NULL
+    elective_type TEXT NOT NULL,
+    branch TEXT NOT NULL
 );

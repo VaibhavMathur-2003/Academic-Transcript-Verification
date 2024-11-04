@@ -2,36 +2,36 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold mb-6">Transcript Results</h1>
+    <h1 class="text-3xl font-bold text-center mb-10 text-gray-800">Transcript Results</h1>
     
     {% for student in students %}
-    <div class="mb-8 bg-white shadow-lg rounded-lg overflow-hidden">
-        <div class="px-6 py-4 bg-gray-50">
-            <h2 class="text-xl font-bold">{{ student.Name }}</h2>
+    <div class="mb-10 bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+        <div class="px-6 py-4 bg-gray-100 border-b border-gray-300">
+            <h2 class="text-xl font-bold text-gray-900">{{ student.Name }}</h2>
             {% if student.name_variations %}
-            <p class="text-sm text-gray-600">Also appears as: {{ student.name_variations|join(', ') }}</p>
+            <p class="text-sm text-gray-600 italic">Also appears as: {{ student.name_variations|join(', ') }}</p>
             {% endif %}
         </div>
         
         <!-- Completed Courses -->
         <div class="px-6 py-4">
-            <h3 class="text-lg font-semibold mb-4">Completed Courses</h3>
-            <table class="min-w-full mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Completed Courses</h3>
+            <table class="min-w-full mb-6 border border-gray-200 rounded-lg">
                 <thead>
                     <tr class="bg-gray-100">
-                        <th class="px-4 py-2 text-left">Course No</th>
-                        <th class="px-4 py-2 text-left">Course Title</th>
-                        <th class="px-4 py-2 text-left">Credits</th>
-                        <th class="px-4 py-2 text-left">Grade</th>
+                        <th class="px-4 py-2 text-left font-semibold text-gray-600">Course No</th>
+                        <th class="px-4 py-2 text-left font-semibold text-gray-600">Course Title</th>
+                        <th class="px-4 py-2 text-left font-semibold text-gray-600">Credits</th>
+                        <th class="px-4 py-2 text-left font-semibold text-gray-600">Grade</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-200">
                     {% for course in student.Courses %}
-                    <tr class="border-t">
-                        <td class="px-4 py-2">{{ course['Course No'] }}</td>
-                        <td class="px-4 py-2">{{ course['Course Title'] }}</td>
-                        <td class="px-4 py-2">{{ course['Credits'] }}</td>
-                        <td class="px-4 py-2">{{ course['Grade'] }}</td>
+                    <tr>
+                        <td class="px-4 py-2 text-gray-700">{{ course['Course No'] }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ course['Course Title'] }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ course['Credits'] }}</td>
+                        <td class="px-4 py-2 text-gray-700">{{ course['Grade'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -40,25 +40,25 @@
             <!-- Missing Courses -->
             {% if student.missing_courses %}
             <div class="mt-8">
-                <h3 class="text-lg font-semibold mb-4 text-red-600">Missing Required Courses</h3>
-                <table class="min-w-full">
+                <h3 class="text-lg font-semibold text-red-600 mb-4">Missing Required Courses</h3>
+                <table class="min-w-full border border-red-200 rounded-lg">
                     <thead>
                         <tr class="bg-red-50">
-                            <th class="px-4 py-2 text-left">Course No</th>
-                            <th class="px-4 py-2 text-left">Course Title</th>
-                            <th class="px-4 py-2 text-left">Credits</th>
-                            <th class="px-4 py-2 text-left">Type</th>
-                            <th class="px-4 py-2 text-left">Category</th>
+                            <th class="px-4 py-2 text-left font-semibold text-red-700">Course No</th>
+                            <th class="px-4 py-2 text-left font-semibold text-red-700">Course Title</th>
+                            <th class="px-4 py-2 text-left font-semibold text-red-700">Credits</th>
+                            <th class="px-4 py-2 text-left font-semibold text-red-700">Type</th>
+                            <th class="px-4 py-2 text-left font-semibold text-red-700">Category</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-red-200">
                         {% for course in student.missing_courses %}
-                        <tr class="border-t border-red-100 bg-red-50">
-                            <td class="px-4 py-2">{{ course.course }}</td>
-                            <td class="px-4 py-2">{{ course.course_title }}</td>
-                            <td class="px-4 py-2">{{ course.credits }}</td>
-                            <td class="px-4 py-2">{{ course.reg_type }}</td>
-                            <td class="px-4 py-2">{{ course.elective_type }}</td>
+                        <tr class="bg-red-50">
+                            <td class="px-4 py-2 text-red-700">{{ course.course }}</td>
+                            <td class="px-4 py-2 text-red-700">{{ course.course_title }}</td>
+                            <td class="px-4 py-2 text-red-700">{{ course.credits }}</td>
+                            <td class="px-4 py-2 text-red-700">{{ course.reg_type }}</td>
+                            <td class="px-4 py-2 text-red-700">{{ course.elective_type }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -81,9 +81,11 @@
     </div>
     {% endfor %}
     
-    <a href="{{ url_for('process_transcript_route') }}" 
-       class="inline-block bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-        Upload Another Transcript
-    </a>
+    <div class="text-center mt-10">
+        <a href="{{ url_for('process_transcript_route') }}" 
+           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md">
+            Upload Another Transcript
+        </a>
+    </div>
 </div>
 {% endblock %}

@@ -5,6 +5,8 @@ import pytesseract
 import numpy as np
 from pdf2image import convert_from_path
 from difflib import SequenceMatcher
+import pdfplumber
+from PIL import Image, ImageEnhance, ImageFilter
 
 
 pytesseract.pytesseract.tesseract_cmd = r'c:/Program Files/Tesseract-OCR/tesseract.exe'
@@ -85,12 +87,6 @@ def merge_student_records(students_list):
 
     return result
 
-import pdfplumber
-import pytesseract
-from PIL import Image, ImageEnhance, ImageFilter
-import cv2
-import numpy as np
-
 
 def preprocess_image_for_ocr(image):
 
@@ -143,10 +139,12 @@ def convert_transcript_to_json(text):
 
     for record in student_records:
         name_match = re.search(r'Name\s*:\s*([^\n]+)', record)
+        branch_match = re.search(r'Degree\s*:\s*([^\n]+)', record)
         if not name_match:
             continue
 
         name = name_match.group(1).strip()
+        branch = branch_match.group(1).strip()
         course_pattern = r'([A-Za-z0-9&]+)\s+([A-Za-z\s&]+(?:\s+[A-Za-z\s&]+)?)\s+(\d+(?:\.\d+)?)\s+([A-Fa-fPpG][+-]?)'
         courses = []
 
@@ -158,15 +156,16 @@ def convert_transcript_to_json(text):
 
             if is_valid_course(course_no, course_title, grade):
                 course = {
-                    "Course No": course_no,
+                    "Course No": course_no.upper(),
                     "Course Title": course_title,
                     "Credits": float(match.group(3)),
-                    "Grade": grade
+                    "Grade": grade.upper()
                 }
                 courses.append(course)
 
         student_entry = {
             "Name": name,
+            "Branch": branch,
             "Courses": courses
         }
         all_students.append(student_entry)
@@ -181,8 +180,3 @@ def process_transcript(pdf_path, output_json_path):
         json.dump(result, indent=2, fp=f)
 
     return result
-
-# pdf_path = '/content/grade.pdf'
-# output_json_path = 'extracted_data.json'
-# result = process_transcript(pdf_path, output_json_path)
-# print(result)
