@@ -145,9 +145,23 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Update the route in app.py
+from flask import Flask, request, flash, redirect, stream_with_context, Response
+from werkzeug.utils import secure_filename
+import os
+from werkzeug.exceptions import RequestEntityTooLarge
+
+# Configuration settings
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 100  # 100MB limit
+app.config['UPLOAD_FOLDER'] = 'temp_uploads'
+app.config['CHUNK_SIZE'] = 4096  # 4KB chunks for streaming
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'}
+
 @app.route('/transcript', methods=['GET', 'POST'])
 def process_transcript_route():
     if request.method == 'POST':
+        # Check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -160,51 +174,96 @@ def process_transcript_route():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(filepath)
+            
+            # Create upload directory if it doesn't exist
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             
             try:
+                # Stream the file to disk in chunks
+                with open(filepath, 'wb') as f:
+                    while True:
+                        chunk = file.stream.read(app.config['CHUNK_SIZE'])
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                
                 # Process the PDF and get results
-                results = process_transcript(filepath, 
-                    os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_data.json'))
-                
-                # Clean up - remove uploaded file after processing
-                os.remove(filepath)
-                
-                # Get all courses from database
-                db = get_db()
-                # db_courses = db.execute('SELECT * FROM courses').fetchall()
-                
-                # For each student, find missing courses
-                for student in results:
-                    student_branch = student['Branch']
-
-                    # Get all courses from database for the student's branch
-                    db_courses = db.execute('SELECT * FROM courses WHERE branch = ?', (student_branch,)).fetchall()
-
-                    student_courses = {course['Course No']: course for course in student['Courses']}
-                    missing_courses = []
+                try:
+                    results = process_transcript(filepath, 
+                        os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_data.json'))
                     
-                    for db_course in db_courses:
-                        if db_course['course'] not in student_courses:
-                            missing_courses.append({
-                                'course': db_course['course'],
-                                'course_title': db_course['course_title'],
-                                'credits': db_course['credits'],
-                                'reg_type': db_course['reg_type'],
-                                'elective_type': db_course['elective_type']
-                            })
+                    # Get database connection
+                    db = get_db()
                     
-                    student['missing_courses'] = missing_courses
-                
-                return render_template('transcript_results.html', students=results)
-                
-            except Exception as e:
-                flash(f'Error processing file: {str(e)}')
-                if os.path.exists(filepath):
+                    # Process results in chunks to avoid memory issues
+                    processed_results = []
+                    for student in results:
+                        student_branch = student['Branch']
+                        
+                        # Get courses for student's branch
+                        db_courses = db.execute(
+                            'SELECT * FROM courses WHERE branch = ?', 
+                            (student_branch,)
+                        ).fetchall()
+                        
+                        student_courses = {
+                            course['Course No']: course 
+                            for course in student['Courses']
+                        }
+                        
+                        missing_courses = []
+                        for db_course in db_courses:
+                            if db_course['course'] not in student_courses:
+                                missing_courses.append({
+                                    'course': db_course['course'],
+                                    'course_title': db_course['course_title'],
+                                    'credits': db_course['credits'],
+                                    'reg_type': db_course['reg_type'],
+                                    'elective_type': db_course['elective_type']
+                                })
+                        
+                        student['missing_courses'] = missing_courses
+                        processed_results.append(student)
+                    
+                    # Clean up uploaded file
                     os.remove(filepath)
+                    
+                    # Stream the template response
+                    return stream_with_context(
+                        render_template(
+                            'transcript_results.html',
+                            students=processed_results
+                        )
+                    )
+                    
+                except Exception as process_error:
+                    flash(f'Error processing file: {str(process_error)}')
+                    if os.path.exists(filepath):
+                        os.remove(filepath)
+                    return redirect(request.url)
+                    
+            except RequestEntityTooLarge:
+                flash('File too large. Maximum size is 100MB.')
+                return redirect(request.url)
+                
+            except Exception as upload_error:
+                flash(f'Error uploading file: {str(upload_error)}')
                 return redirect(request.url)
                 
     return render_template('transcript_upload.html')
+
+# Error handlers
+@app.errorhandler(413)
+def request_entity_too_large(error):
+    flash('File too large. Maximum size is 100MB.')
+    return redirect(url_for('process_transcript_route')), 413
+
+# Optional: Add a progress endpoint for large uploads
+@app.route('/upload-progress')
+def upload_progress():
+    # Implement progress tracking logic here
+    progress = session.get('upload_progress', 0)
+    return jsonify({'progress': progress})
 
 
 if __name__ == '__main__':

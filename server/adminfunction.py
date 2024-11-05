@@ -9,6 +9,9 @@ import pdfplumber
 from PIL import Image, ImageEnhance, ImageFilter
 
 
+#sudo apt-get update
+#sudo apt-get install tesseract-ocr
+#pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 pytesseract.pytesseract.tesseract_cmd = r'c:/Program Files/Tesseract-OCR/tesseract.exe'
 
 def similarity_ratio(str1, str2):
