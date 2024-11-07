@@ -43,6 +43,12 @@ sudo apt-get install tesseract-ocr
 python app.py
 ```
 
+7. Access the application:
+Once the server is running, open your web browser and navigate to:
+```
+http://127.0.0.1:5000/transcript
+```
+
 ## Complete Bash Script:
 ```bash
 git clone https://github.com/VaibhavMathur-2003/Academic-Transcript-Verification.git
@@ -55,6 +61,4 @@ sudo apt-get install tesseract-ocr
 python app.py
 ```
 
-## Support
 
-If you encounter any issues, please create an issue in the GitHub repository.
