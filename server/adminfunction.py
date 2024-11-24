@@ -7,12 +7,18 @@ from pdf2image import convert_from_path
 from difflib import SequenceMatcher
 import pdfplumber
 from PIL import Image, ImageEnhance, ImageFilter
+import platform
 
+system = platform.system().lower()
 
-# sudo apt-get update
-# sudo apt-get install tesseract-ocr
-pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
-# pytesseract.pytesseract.tesseract_cmd = r'c:/Program Files/Tesseract-OCR/tesseract.exe'
+if system == 'linux':
+   pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
+elif system == 'windows':
+   pytesseract.pytesseract.tesseract_cmd = r'c:/Program Files/Tesseract-OCR/tesseract.exe'
+elif system == 'darwin':
+   pytesseract.pytesseract.tesseract_cmd = '/usr/local/bin/tesseract'
+else:
+   raise OSError(f"Unsupported operating system: {system}")
 
 def similarity_ratio(str1, str2):
     return SequenceMatcher(None, str1.lower(), str2.lower()).ratio()

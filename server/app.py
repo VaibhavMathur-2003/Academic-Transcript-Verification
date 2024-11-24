@@ -8,7 +8,7 @@ import io
 import csv
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this to a random secret key
+app.secret_key = 'your_secret_key' 
 
 DATABASE = 'criteria.db'
 
@@ -54,17 +54,19 @@ def login_required(f):
 
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET', 'POST'])
 @cross_origin()
 def upload_file():
-    if 'file' not in request.files:
-        return 'No file part', 400
-    file = request.files['file']
-    if file.filename == '':
-        return 'No selected file', 400
-    if file:
-        report_data = process_html(file)
-        return jsonify(report_data)
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return 'No file part', 400
+        file = request.files['file']
+        if file.filename == '':
+            return 'No selected file', 400
+        if file:
+            report_data = process_html(file)
+            return jsonify(report_data)
+    return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -128,29 +130,92 @@ def logout():
     session.pop('admin', None)
     return redirect(url_for('login'))
 
-# First add these imports at the top of your app.py
+@app.route('/courses')
+def view_courses():
+    db = get_db()
+    branches = db.execute('SELECT DISTINCT branch FROM courses').fetchall()
+    
+    branch_filter = request.args.get('branch', '')
+    search_query = request.args.get('search', '')
+    sort_by = request.args.get('sort', 'course')  
+    
+    query = 'SELECT * FROM courses WHERE 1=1'
+    params = []
+    
+    if branch_filter:
+        query += ' AND branch = ?'
+        params.append(branch_filter)
+    if search_query:
+        query += ' AND (course LIKE ? OR course_title LIKE ?)'
+        params.extend(['%' + search_query + '%'] * 2)
+    
+    query += f' ORDER BY {sort_by}'
+    courses = db.execute(query, params).fetchall()
+    
+    return render_template('courses.html', 
+                         courses=courses, 
+                         branches=branches,
+                         current_branch=branch_filter,
+                         search_query=search_query,
+                         sort_by=sort_by)
+
+@app.route('/courses/edit/<int:id>', methods=['GET', 'POST'])
+@login_required 
+def edit_course(id):
+    db = get_db()
+    if request.method == 'POST':
+        course = request.form['course']
+        course_title = request.form['course_title']
+        credits = request.form['credits']
+        reg_type = request.form['reg_type']
+        elective_type = request.form['elective_type']
+        branch = request.form['branch']
+        
+        db.execute('''UPDATE courses 
+                     SET course = ?, course_title = ?, credits = ?, 
+                         reg_type = ?, elective_type = ?, branch = ?
+                     WHERE id = ?''',
+                  (course, course_title, credits, reg_type, 
+                   elective_type, branch, id))
+        db.commit()
+        flash('Course updated successfully!')
+        return redirect(url_for('view_courses'))
+    
+    course = db.execute('SELECT * FROM courses WHERE id = ?', 
+                       [id]).fetchone()
+    if course is None:
+        flash('Course not found!')
+        return redirect(url_for('view_courses'))
+    
+    return render_template('edit_course.html', course=course)
+
+@app.route('/courses/delete/<int:id>', methods=['POST'])
+@login_required 
+def delete_course(id):
+    db = get_db()
+    db.execute('DELETE FROM courses WHERE id = ?', [id])
+    db.commit()
+    flash('Course deleted successfully!')
+    return redirect(url_for('view_courses'))
+
 from werkzeug.utils import secure_filename
 import os
-from adminfunction import process_transcript  # Assuming you'll save the transcript processing code in function.py
+from adminfunction import process_transcript  
 
-# Add these configurations after app creation
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create uploads directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Update the route in app.py
 from flask import Flask, request, flash, redirect, stream_with_context, Response
 from werkzeug.utils import secure_filename
 import os
 from werkzeug.exceptions import RequestEntityTooLarge
 
-# Configuration settings
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 100  # 100MB limit
 app.config['UPLOAD_FOLDER'] = 'temp_uploads'
 app.config['CHUNK_SIZE'] = 4096  # 4KB chunks for streaming
@@ -161,7 +226,6 @@ def allowed_file(filename):
 @app.route('/transcript', methods=['GET', 'POST'])
 def process_transcript_route():
     if request.method == 'POST':
-        # Check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
@@ -175,11 +239,9 @@ def process_transcript_route():
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             
-            # Create upload directory if it doesn't exist
             os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
             
             try:
-                # Stream the file to disk in chunks
                 with open(filepath, 'wb') as f:
                     while True:
                         chunk = file.stream.read(app.config['CHUNK_SIZE'])
@@ -187,20 +249,16 @@ def process_transcript_route():
                             break
                         f.write(chunk)
                 
-                # Process the PDF and get results
                 try:
                     results = process_transcript(filepath, 
                         os.path.join(app.config['UPLOAD_FOLDER'], 'extracted_data.json'))
                     
-                    # Get database connection
                     db = get_db()
                     
-                    # Process results in chunks to avoid memory issues
                     processed_results = []
                     for student in results:
                         student_branch = student['Branch']
                         
-                        # Get courses for student's branch
                         db_courses = db.execute(
                             'SELECT * FROM courses WHERE branch = ?', 
                             (student_branch,)
@@ -225,10 +283,8 @@ def process_transcript_route():
                         student['missing_courses'] = missing_courses
                         processed_results.append(student)
                     
-                    # Clean up uploaded file
                     os.remove(filepath)
                     
-                    # Stream the template response
                     return stream_with_context(
                         render_template(
                             'transcript_results.html',
@@ -252,16 +308,13 @@ def process_transcript_route():
                 
     return render_template('transcript_upload.html')
 
-# Error handlers
 @app.errorhandler(413)
 def request_entity_too_large(error):
     flash('File too large. Maximum size is 100MB.')
     return redirect(url_for('process_transcript_route')), 413
 
-# Optional: Add a progress endpoint for large uploads
 @app.route('/upload-progress')
 def upload_progress():
-    # Implement progress tracking logic here
     progress = session.get('upload_progress', 0)
     return jsonify({'progress': progress})
 

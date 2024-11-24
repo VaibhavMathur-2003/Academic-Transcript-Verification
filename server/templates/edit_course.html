@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Edit Course</h1>
+            
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label for="course" class="block text-sm font-medium text-gray-700">Course Code</label>
+                    <input type="text" name="course" id="course" required
+                           value="{{ course.course }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="course_title" class="block text-sm font-medium text-gray-700">Course Title</label>
+                    <input type="text" name="course_title" id="course_title" required
+                           value="{{ course.course_title }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="credits" class="block text-sm font-medium text-gray-700">Credits</label>
+                    <input type="number" name="credits" id="credits" required
+                           value="{{ course.credits }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="branch" class="block text-sm font-medium text-gray-700">Branch</label>
+                    <input type="text" name="branch" id="branch" required
+                           value="{{ course.branch }}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="reg_type" class="block text-sm font-medium text-gray-700">Registration Type</label>
+                    <select name="reg_type" id="reg_type" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="Core" {% if course.reg_type == 'Core' %}selected{% endif %}>Core</option>
+                        <option value="Elective" {% if course.reg_type == 'Elective' %}selected{% endif %}>Elective</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="elective_type" class="block text-sm font-medium text-gray-700">Elective Type</label>
+                    <select name="elective_type" id="elective_type" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="None" {% if course.elective_type == 'None' %}selected{% endif %}>None</option>
+                        <option value="DE" {% if course.elective_type == 'DE' %}selected{% endif %}>Departmental Elective (DE)</option>
+                        <option value="OE" {% if course.elective_type == 'OE' %}selected{% endif %}>Open Elective (OE)</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <a href="{{ url_for('view_courses') }}"
+                       class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
