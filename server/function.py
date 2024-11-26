@@ -4,7 +4,6 @@ import csv
 from io import BytesIO, StringIO
 import sqlite3
 
-# Define the elective types to be filtered
 electives = ["Institute Core Theory", "Open Elective", "Project", "Institute Core Lab", "Program Elective", "Program Core Theory + Lab"]
 
 DATABASE = 'criteria.db'
@@ -16,7 +15,6 @@ def get_db():
         db.row_factory = sqlite3.Row
     return db
 
-# Fetch courses from the database along with their elective_type
 def get_courses_from_db():
     db = get_db()
     courses = db.execute('SELECT course, course_title, elective_type FROM courses').fetchall()
@@ -40,7 +38,7 @@ def process_html(file):
 
         for li in ul.find_all('li', class_='hierarchyLi dataLi tab_body_bg'):
             row = []
-            for i in range(1, 6):  # col1 to col5
+            for i in range(1, 6):
                 col = li.find('span', class_=f'col{i}')
                 row.append(col.text.strip() if col else '')
 

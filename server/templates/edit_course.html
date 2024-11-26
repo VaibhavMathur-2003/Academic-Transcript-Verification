@@ -12,6 +12,13 @@
             <h1 class="text-2xl font-bold text-gray-900 mb-6">Edit Course</h1>
             
             <form method="POST" class="space-y-6">
+                <!-- Add this near the top of the form or in a hidden input -->
+{% if is_version is defined and is_version %}
+<div class="mb-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded p-4">
+    You are creating a new version of this course
+</div>
+{% endif %}
+
                 <div>
                     <label for="course" class="block text-sm font-medium text-gray-700">Course Code</label>
                     <input type="text" name="course" id="course" required

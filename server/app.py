@@ -15,7 +15,7 @@ DATABASE = 'criteria.db'
 def process_csv(file):
     stream = io.StringIO(file.stream.read().decode("UTF8"), newline=None)
     csv_reader = csv.reader(stream)
-    next(csv_reader)  # Skip the header row
+    next(csv_reader)
     db = get_db()
     cursor = db.cursor()
     for row in csv_reader:
@@ -159,6 +159,48 @@ def view_courses():
                          search_query=search_query,
                          sort_by=sort_by)
 
+@app.route('/courses/add_version/<int:original_course_id>', methods=['GET', 'POST'])
+@login_required 
+def add_course_version(original_course_id):
+    db = get_db()
+    original_course = db.execute('SELECT * FROM courses WHERE id = ?', [original_course_id]).fetchone()
+    
+    if request.method == 'POST':
+        course = request.form['course']
+        course_title = request.form['course_title']
+        credits = request.form['credits']
+        reg_type = request.form['reg_type']
+        elective_type = request.form['elective_type']
+        branch = request.form['branch']
+        
+        max_version = db.execute('''
+            SELECT COALESCE(MAX(version), 0) + 1 as new_version 
+            FROM courses 
+            WHERE course = ? AND branch = ?
+        ''', (original_course['course'], original_course['branch'])).fetchone()['new_version']
+        
+        db.execute('''
+            UPDATE courses 
+            SET is_current = 0 
+            WHERE course = ? AND branch = ?
+        ''', (original_course['course'], original_course['branch']))
+        
+        db.execute('''
+            INSERT INTO courses 
+            (course, course_title, credits, reg_type, elective_type, branch, 
+            version, parent_course_id, is_current)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+        ''', (
+            course, course_title, credits, reg_type, 
+            elective_type, branch, max_version, original_course_id
+        ))
+        db.commit()
+        
+        flash('New course version added successfully!')
+        return redirect(url_for('view_courses'))
+    
+    return render_template('edit_course.html', course=original_course, is_version=True)
+
 @app.route('/courses/edit/<int:id>', methods=['GET', 'POST'])
 @login_required 
 def edit_course(id):
@@ -216,9 +258,9 @@ from werkzeug.utils import secure_filename
 import os
 from werkzeug.exceptions import RequestEntityTooLarge
 
-app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 100  # 100MB limit
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 100 
 app.config['UPLOAD_FOLDER'] = 'temp_uploads'
-app.config['CHUNK_SIZE'] = 4096  # 4KB chunks for streaming
+app.config['CHUNK_SIZE'] = 4096 
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf'}
@@ -269,15 +311,51 @@ def process_transcript_route():
                             for course in student['Courses']
                         }
                         
+                        
+                        parent_child_map = {}
+                        for db_course in db_courses:
+                            parent_id = db_course['parent_course_id']
+                            course_no = db_course['course']
+                            
+                            if parent_id:
+                                parent_course = db.execute(
+                                    'SELECT course FROM courses WHERE id = ?', 
+                                    (parent_id,)
+                                ).fetchone()
+                                
+                                if parent_course:
+                                    parent_course_code = parent_course['course']
+                                    if parent_course_code not in parent_child_map:
+                                        parent_child_map[parent_course_code] = set()
+                                    parent_child_map[parent_course_code].add(course_no)
+                        
+                        
                         missing_courses = []
                         for db_course in db_courses:
-                            if db_course['course'] not in student_courses:
+                            course_no = db_course['course']
+                            
+                            is_course_present = course_no in student_courses
+                            
+                            is_parent_version_present = any(
+                                parent in student_courses 
+                                for parent in parent_child_map.keys() 
+                                if course_no in parent_child_map.get(parent, set())
+                            )
+                            
+                            is_child_version_present = any(
+                                child in student_courses 
+                                for child in parent_child_map.get(course_no, set())
+                            )
+                            
+                            if not (is_course_present or is_parent_version_present or is_child_version_present):
                                 missing_courses.append({
                                     'course': db_course['course'],
                                     'course_title': db_course['course_title'],
                                     'credits': db_course['credits'],
                                     'reg_type': db_course['reg_type'],
-                                    'elective_type': db_course['elective_type']
+                                    'elective_type': db_course['elective_type'],
+                                    'version': db_course['version'],
+                                    'parent_course_id': db_course['parent_course_id']
                                 })
                         
                         student['missing_courses'] = missing_courses
@@ -293,6 +371,8 @@ def process_transcript_route():
                     )
                     
                 except Exception as process_error:
+                    import traceback
+                    traceback.print_exc()
                     flash(f'Error processing file: {str(process_error)}')
                     if os.path.exists(filepath):
                         os.remove(filepath)
@@ -320,5 +400,5 @@ def upload_progress():
 
 
 if __name__ == '__main__':
-    init_db()  # Initialize the database before running the app
+    init_db()
     app.run(host="0.0.0.0", port=5000, debug=True)
